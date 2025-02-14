@@ -56,7 +56,7 @@ Ketika user membuka halaman login, Flask akan menampilkan form login dari file `
 - Kemudian, user dialihkan ke halaman `Students DB` (`/students`).
 - Jika username tidak ditemukan atau password salah, server akan menampilkan pesan error di halaman `login.html`, dan user mencoba lagi
 
-4. Tampilkan Daftar Student
+4. Tampilkan Daftar Students
 
 Code:
 ![](https://github.com/user-attachments/assets/6267e5b9-4df8-4af6-a776-274e5dd2d6ba)
@@ -102,15 +102,32 @@ Code:
 ![](https://github.com/user-attachments/assets/d22220cc-8537-45fc-a0ec-b9e04c719bad)
 
 ### **Penjelasan**
+- Jika `user_id` tidak ada di session, artinya user belum login.
+- Akan muncul pesan peringatan "Please log in to access this page."
+- User akan diarahkan ke halaman login (`/login`).
+- Jika user sudah login, sistem mengambil data student berdasarkan id dengan `Student.query.get_or_404(id)`.
+- Jika user mengedit data dan menekan tombol Update, perubahan disimpan ke database dan user diarahkan kembali ke halaman Students (`/students`).
+- Jika user hanya membuka halaman edit tanpa submit, data student yang sudah ada ditampilkan di form edit (`edit.html`).
 
+`edit.html` berisi:
+- Form edit student → menampilkan data Name, Age, dan Grade yang sudah ada.
+- User bisa mengubah data dan menekan tombol `Update`.
+- Data dikirim ke server menggunakan `POST` request ke `/edit/{id}`.
+- Setelah sukses, user diarahkan kembali ke halaman Students (`/students`)
 
 7. Delete Student
 
 Code:
 ![](https://github.com/user-attachments/assets/97c25fd4-37b0-4178-9a87-c249f8afca0f)
 
-
 ### **Penjelasan**
+- Cek jika user sudah login
+- Jika sudah login, user akan berada di halaman `student.html`.
+- `student.html` berisi memiliki tombol `Delete` di setiap data student yang mengarah ke `/delete/{id}`.
+- Cari data student berdasarkan id dengan `Student.query.get_or_404(id)`.
+- Jika id tidak ditemukan, tampilkan 404 error.
+- Hapus student dari database dengan `db.session.delete(student)`, lalu `db.session.commit()` untuk menyimpan perubahan.
+- Tampilkan pesan "Student deleted successfully!" dan arahkan user kembali ke halaman Students (`/students`).
 
 8. Logout
 
@@ -118,6 +135,9 @@ Code:
 ![](https://github.com/user-attachments/assets/9dd2984c-2975-45e7-9996-786cf95d362b)
 
 ### **Penjelasan**
+- Menghapus session dengan `session.clear()`, yang berarti semua data session akan dihapus dan user akan kehilangan akses ke halaman yang membutuhkan login.
+- Menampilkan pesan "Logged out successfully.".
+- Mengalihkan user ke halaman utama (`/index`), sehingga mereka harus login kembali untuk mengakses halaman yang membutuhkan autentikasi.
 
 ## **Class Diagram**
 ![image](https://github.com/user-attachments/assets/d73b3a5a-286d-4c62-a050-f0ba17c78cd7)
